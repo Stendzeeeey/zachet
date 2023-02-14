@@ -8,13 +8,13 @@ using namespace std;
 
 void Solve()
 {
-Task("Dynamic55");
-PNode p1, p2;
-pt » p1;
-p2 = p1;
-while (p2->Next != NULL)
-p2 = p2->Next;
-p2->Next = p1;
-p1->Prev = p2;
-pt « p2;
+	Task("Dynamic55");
+	PNode p1, p2;
+	pt >> p1;
+	p2 = p1;
+	while (p2->Next != NULL)
+		p2 = p2->Next;
+	p2->Next = p1;
+	p1->Prev = p2;
+	pt << p2;
 }
