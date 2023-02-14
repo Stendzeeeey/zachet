@@ -1,0 +1,107 @@
+На вход подаются сведения о задолженности по оплате коммунальных услуг жильцов 144-квартирного 9-этажного дома. В первой строке указывается общее число задолжников N. Каждая из последующих N строк содержит информацию об одном из задолжников в формате
+
+<Номер квартиры> <Фамилия> <Задолженность>
+
+Задолженность указывается в виде дробного числа (целая часть — рубли, дробная часть — копейки). В каждом подъезде на каждом этаже располагаются по 4 квартиры. Для каждого из 4 подъездов дома вывести сведения о задолжниках, живущих в этом подъезде: номер подъезда, число задолжников, средняя задолженность для жильцов этого подъезда (выводится с двумя дробными знаками). Жильцы, не имеющие долга, при вычислении средней задолженности не учитываются. Сведения о каждом подъезде выводить на отдельной строке и упорядочивать по возрастанию номера подъезда. Если в каком-либо подъезде задолжники отсутствуют, то данные об этом подъезде не выводить.
+
+#include <windows.h>
+#include <iostream>
+#include <iomanip>
+#pragma hdrstop
+#include "pt4exam.h"
+
+struct out_kvart
+{
+	int kol_dolg;
+	double sredn;
+	int kvart_num;
+};
+
+struct kvart
+{
+	string fam;
+	double dolg;
+	int num;
+};
+
+
+void kol_doljn(kvart* mas_kvart, out_kvart* pod_ezd, int n)
+{
+	for (int i = 0; i < n; i++)
+	{
+		if (mas_kvart[i].num >= 1 && mas_kvart[i].num <= 36)
+		{
+			pod_ezd[0].kol_dolg++; pod_ezd[0].sredn += mas_kvart[i].dolg;
+			continue;
+		}
+
+		if (mas_kvart[i].num >= 37 && mas_kvart[i].num <= 72)
+		{
+			pod_ezd[1].kol_dolg++; pod_ezd[1].sredn += mas_kvart[i].dolg;
+			continue;
+		}
+
+		if (mas_kvart[i].num >= 73 && mas_kvart[i].num <= 108)
+		{
+			pod_ezd[2].kol_dolg++; pod_ezd[2].sredn += mas_kvart[i].dolg;
+			continue;
+		}
+
+		if (mas_kvart[i].num >= 109 && mas_kvart[i].num <= 144)
+		{
+			pod_ezd[3].kol_dolg++; pod_ezd[3].sredn += mas_kvart[i].dolg;
+			continue;
+		}
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		pod_ezd[i].sredn = pod_ezd[i].sredn / pod_ezd[i].kol_dolg;
+	}
+}
+
+void sort(out_kvart** pointer_pod_ezd)
+{
+	for (int i = 0; i < 4; i++)
+		for (int j = 0; j < 4 - i - 1; j++)
+			if (pointer_pod_ezd[j]->kol_dolg < pointer_pod_ezd[j + 1]->kol_dolg || pointer_pod_ezd[j]->kol_dolg == pointer_pod_ezd[j + 1]->kol_dolg && pointer_pod_ezd[j]->kvart_num > pointer_pod_ezd[j + 1]->kvart_num)
+				swap(pointer_pod_ezd[j], pointer_pod_ezd[j + 1]);
+}
+void Solve()
+{
+    Task("ExamTaskC38");
+
+	int n; cin >> n;
+	kvart* mas_kvart = new kvart[n];
+	for (int i = 0; i < n; i++)
+	{
+		cin >> mas_kvart[i].fam;
+		cin >> mas_kvart[i].dolg;
+		cin >> mas_kvart[i].num;
+	}
+
+	out_kvart* pod_ezd = new out_kvart[4];
+	for (int i = 0; i < 4; i++)
+	{
+		pod_ezd[i].kol_dolg = 0;
+		pod_ezd[i].sredn = 0;
+		pod_ezd[i].kvart_num = i+1;
+	}
+
+	out_kvart** pointer_pod_ezd = new out_kvart*[4];
+	for (int i = 0; i < 4; i++)
+		pointer_pod_ezd[i] = &pod_ezd[i];
+
+	kol_doljn(mas_kvart, pod_ezd, n);
+	sort(pointer_pod_ezd);
+
+	for (int i = 0; i < 4; i++)
+		if (pointer_pod_ezd[i]->kol_dolg != 0)
+		{
+			cout << << pointer_pod_ezd[i]->kvart_num << ' ' << pointer_pod_ezd[i]->kol_dolg  << fixed << setprecision(2) << pointer_pod_ezd[i]->sredn;
+			cout << '\n';
+		}
+	delete[] pointer_pod_ezd;
+	delete[] mas_kvart;
+	delete[] pod_ezd;
+}
